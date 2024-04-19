@@ -4,17 +4,23 @@ import winsound
 import pvporcupine
 import struct
 import pyaudio
-from TOKENpicovoice import TOKEN
-import sys
+from dotenv import load_dotenv
+import sys, os
+from tts import va_speak
+from modules.functions import imready, find_command
 
 # создаем экземпляр класса Recognizer
 recognizer = sr.Recognizer()
 
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
+
 def show_exception_and_exit(exc_type, exc_value, tb):
-	import traceback
-	traceback.print_exception(exc_type, exc_value, tb)
-	input("Press key to exit.")
-	sys.exit(-1)
+    import traceback
+    traceback.print_exception(exc_type, exc_value, tb)
+    input("Press key to exit.")
+    sys.exit(-1)
 sys.excepthook = show_exception_and_exit
 
 def main():
@@ -22,9 +28,8 @@ def main():
         porcupine = None
         pa = None
         audio_stream = None
-        
         print("Слушаю: ")
-        
+        imready()
         porcupine = pvporcupine.create(access_key=TOKEN, keywords=['jarvis'])
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
@@ -56,22 +61,22 @@ def listening ():
             winsound.Beep(350, 200)
             audio_data = recognizer.listen(source, phrase_time_limit=3)
         try:
-            text = recognizer.recognize_google(audio_data, language="ru-RU")
+            data = recognizer.recognize_google(audio_data, language="ru-RU")
             
-            c = text.split()
-            # Формируем ключ для поиска в словаре команд
-            key = ' '.join(c[:2]) if len(c) >= 2 else ' '.join(c)
-            key = key.lower()
+            c, text = find_command(data, commands)
 
-            closest_command = get_closest_command(key, commands)
+            # print(c)
+            # print(text)
 
-            if closest_command in commands:
-                if len(c) > 2:
-                    commands[closest_command](c[2:])
-                else:
-                    commands[closest_command]() 
+            if c is None:
+                print("Такой команды нет: " + data)
+                return
+            
+            if len(text) > 0:
+                commands[c](text)
             else:
-                print("Такой команды нет: " + text)
+                commands[c]()
+                
         except sr.UnknownValueError:
             pass
         except sr.RequestError as e:

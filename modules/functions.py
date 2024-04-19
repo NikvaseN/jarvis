@@ -1,16 +1,33 @@
-import os
+import sys, os
 import psutil
-from config import games
+from config import games, URL_SOUNDS
 import winsound
 import subprocess
 from fuzzywuzzy import process
+import ctypes
+from modules.soundplay import soundplay
+import threading
+def sound(url = None):
+    if url is None:
+        winsound.Beep(300, 200)
+        winsound.Beep(500, 200)
+    else:
+        soundplay(os.path.join(URL_SOUNDS, url))
 
-def successfully():
-    winsound.Beep(300, 200)
-    winsound.Beep(500, 200)
-    
+def closing():
+    sound('Закрываю.mp3')
+
+def opening():
+    sound('Открываю.mp3')
+
+def starting():
+    sound('Запускаю.mp3')
+
+def imready():
+    sound('Готов_к_работе.mp3')
+        
 def error():
-    winsound.Beep(200, 200)
+    soundplay(os.path.join(URL_SOUNDS, 'Что_то_пошло_не_так.mp3'))
 
 def killProcess(names):
     if isinstance(names, list):
@@ -19,7 +36,6 @@ def killProcess(names):
                 for name in names:
                     if name.lower() in proc.name().lower():
                         proc.kill()
-                        successfully()
             except (psutil.AccessDenied, psutil.NoSuchProcess):
                 pass
     elif isinstance(names, str):
@@ -27,15 +43,19 @@ def killProcess(names):
             try:
                 if name.lower() in proc.name().lower():
                     proc.kill()
-                    successfully()
             except (psutil.AccessDenied, psutil.NoSuchProcess):
                 pass
 
 def startProcess(url) :
-    subprocess.Popen([url])
-    successfully()
+    starting()
+    subprocess.Popen(url)
+    
+def startAdminProcess(url) :
+    starting()
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", url, None, None, 1)
     
 def closeGames():
+    closing()
     killProcess(games)
 
 def get_closest_match(text, KEYWORDS):
@@ -46,13 +66,28 @@ def getUrl(user_input, KEYWORDS, URLS):
     if user_input is not None:
         user_input = ' '.join(user_input)
         name = user_input.lower()
-        closest_match = get_closest_match(name, KEYWORDS)
         if name in URLS:
             return URLS[name]
-        elif closest_match in KEYWORDS:
-            return URLS[KEYWORDS[closest_match]]
+        elif name in KEYWORDS:
+            return URLS[KEYWORDS[name]]
         else:
             None
     else:
-        error()
+        None
+        
+def restartMe ():
+    subprocess.Popen(['python', r'C:\Users\User0\Desktop\Jarvis\main2.py'])
+    os._exit(0)
+
+def find_command(text, commands):
+    text_split = text.lower().split()
+    for i in range(len(text_split), 0, -1):  # Проверяем от самого длинного к самому короткому
+        key = ' '.join(text_split[:i])
+        if key in commands:
+            return key, text_split[i:]
+    return None, None
+	
+def print_active_threads():
+    for thread in threading.enumerate():
+        print(f"Активный поток: {thread.name}")
     
