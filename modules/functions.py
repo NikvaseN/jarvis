@@ -7,12 +7,18 @@ from fuzzywuzzy import process
 import ctypes
 from modules.soundplay import soundplay
 import threading
-def sound(url = None):
-    if url is None:
-        winsound.Beep(300, 200)
-        winsound.Beep(500, 200)
-    else:
-        soundplay(os.path.join(URL_SOUNDS, url))
+from tts import va_speak
+
+def sound(url=None):
+    def play_sound():
+        if url is None:
+            winsound.Beep(300, 200)
+            winsound.Beep(500, 200)
+        else:
+            soundplay(os.path.join(URL_SOUNDS, url))
+
+    sound_thread = threading.Thread(target=play_sound)
+    sound_thread.start()
 
 def closing():
     sound('Закрываю.mp3')
@@ -62,18 +68,24 @@ def get_closest_match(text, KEYWORDS):
     closest_match, _ = process.extractOne(text, KEYWORDS.keys())
     return closest_match
 
-def getUrl(user_input, KEYWORDS, URLS):
+def getUrl(user_input, URLS):
     if user_input is not None:
         user_input = ' '.join(user_input)
         name = user_input.lower()
         if name in URLS:
             return URLS[name]
-        elif name in KEYWORDS:
-            return URLS[KEYWORDS[name]]
         else:
-            None
+            for key in URLS:
+                value = URLS[key]
+                if isinstance(key, tuple):
+                    for alias in key:
+                        if alias == name:
+                            return value
+                elif key == name:
+                    return value
+        return None
     else:
-        None
+        return None
         
 def restartMe ():
     subprocess.Popen(['python', r'C:\Users\User0\Desktop\Jarvis\main2.py'])
@@ -81,13 +93,27 @@ def restartMe ():
 
 def find_command(text, commands):
     text_split = text.lower().split()
-    for i in range(len(text_split), 0, -1):  # Проверяем от самого длинного к самому короткому
+    for i in range(len(text_split), 0, -1):
         key = ' '.join(text_split[:i])
-        if key in commands:
-            return key, text_split[i:]
+        for command_key in commands:
+            if isinstance(command_key, tuple):
+                for alias in command_key:
+                    if alias == key:
+                        return command_key, text_split[i:]
+            else:
+                if command_key == key:
+                    return command_key, text_split[i:]
     return None, None
 	
 def print_active_threads():
     for thread in threading.enumerate():
         print(f"Активный поток: {thread.name}")
     
+
+def openClips ():
+	opening()
+	os.system(r'start E:\Видио')
+
+def closeSelf ():
+	opening()
+	os._exit(0)

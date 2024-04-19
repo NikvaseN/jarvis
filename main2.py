@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import sys, os
 from tts import va_speak
 from modules.functions import imready, find_command
+import traceback
 
 # создаем экземпляр класса Recognizer
 recognizer = sr.Recognizer()
@@ -17,7 +18,6 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
 def show_exception_and_exit(exc_type, exc_value, tb):
-    import traceback
     traceback.print_exception(exc_type, exc_value, tb)
     input("Press key to exit.")
     sys.exit(-1)
@@ -30,7 +30,7 @@ def main():
         audio_stream = None
         print("Слушаю: ")
         imready()
-        porcupine = pvporcupine.create(access_key=TOKEN, keywords=['jarvis'])
+        porcupine = pvporcupine.create(access_key=TOKEN, keywords=['alexa'])
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
             rate=porcupine.sample_rate,

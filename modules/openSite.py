@@ -1,12 +1,12 @@
 import webbrowser
 import winsound
 from fuzzywuzzy import process
-from config import sites_URLS as URLS, sites_KEYWORDS as KEYWORDS
+from config import sites_URLS as URLS
 from modules.functions import opening, getUrl, error, sound
 
 def openSite (que = None):
     try:
-        url = getUrl(que, KEYWORDS, URLS)     
+        url = getUrl(que, URLS)
         if url:
             opening()
             webbrowser.open(url, new=2)
