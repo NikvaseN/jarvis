@@ -19,9 +19,9 @@ def soupGetTemp(soup, name):
 
 def getWind(soup):
     info = soup.select('div.now-info')[0]
-    wind = info.find("div", class_="unit_wind_km_h").text.strip()
-    wind = wind[0:len(wind) - 6]
-    return wind
+    wind_text = info.find("div", class_="unit_wind_km_h").text.strip()
+    wind_digits = ''.join(filter(str.isdigit, wind_text))
+    return wind_digits
 
 def getHumidity(soup):
     info = soup.select('div.now-info-item.humidity')[0]

@@ -1,6 +1,6 @@
 import sys, os
 import psutil
-from config import games, URL_SOUNDS
+from config import games, URL_SOUNDS, buttons
 import winsound
 import subprocess
 from fuzzywuzzy import process
@@ -8,6 +8,9 @@ import ctypes
 from modules.soundplay import soundplay
 import threading
 from tts import va_speak
+import pyautogui
+import time
+import pyperclip
 
 def sound(url=None):
     def play_sound():
@@ -54,7 +57,7 @@ def killProcess(names):
 
 def startProcess(url) :
     starting()
-    subprocess.Popen(url)
+    subprocess.Popen([url, ])
     
 def startAdminProcess(url) :
     starting()
@@ -104,16 +107,33 @@ def find_command(text, commands):
                 if command_key == key:
                     return command_key, text_split[i:]
     return None, None
-	
+    
 def print_active_threads():
     for thread in threading.enumerate():
         print(f"Активный поток: {thread.name}")
     
 
 def openClips ():
-	opening()
-	os.system(r'start E:\Видио')
+    opening()
+    os.system(r'start E:\Видио')
 
 def closeSelf ():
-	opening()
-	os._exit(0)
+    opening()
+    os._exit(0)
+    
+def press_button(button = None):
+    try:
+        if button is not None:
+            buttonFind = getUrl(button, buttons)
+            sound('Нажимаю.mp3')
+            if(buttonFind):
+                pyautogui.press(buttonFind)
+            else: 
+                pyautogui.press(button)
+        else:
+            sound('Неправильные_параметры.mp3')
+    except:
+        sound('Что_то_пошло_не_так.mp3')
+        
+def copy(data):
+	pyperclip.copy(data)

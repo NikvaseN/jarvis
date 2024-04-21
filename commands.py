@@ -1,10 +1,11 @@
 from modules.openSite import openSite
 from modules.startDegree import startDegree
 from modules.startGame import startGame
-from modules.functions import closeGames, restartMe, print_active_threads, openClips, closeSelf
+from modules.functions import *
 from modules.translate import translate
 from modules.weather import weather
 from modules.clicker import start_clicker, stop_clicker
+from modules.chatgpt import sendQuest
 
 import os, sys
 from fuzzywuzzy import process
@@ -27,6 +28,8 @@ commands = {
     "открой": empty,
     "закрой": empty,
     "запусти": empty,
+
+    ('stop', 'стоп'): restartMe,
     
     "открой сайт": openSite,
     ("открой клипы", 'открой демки'): openClips,
@@ -34,7 +37,7 @@ commands = {
     "запусти диплом": startDegree,
     "запусти игру": startGame,
     
-    "перезапусти себя": restartMe,
+    "обновись": restartMe,
 
     ("переведи", "переведи слово"): translate,
 
@@ -44,9 +47,12 @@ commands = {
     "покажи потоки": print_active_threads,
     
 	("покажи команды", "покажи все команды"): show_all_commads,
+
+	("нажми", "нажми кнопку", 'нажми клавишу'): press_button,
     
-    "какая погода": weather,
-    "какая сейчас погода": weather,
+    ("какая погода", "какая сейчас погода"): weather,
+
+    ("узнай", "скажи"): sendQuest,
     
     "закрой игру": closeGames,
     "закрой себя": closeSelf,

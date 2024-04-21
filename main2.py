@@ -9,13 +9,14 @@ import sys, os
 from tts import va_speak
 from modules.functions import imready, find_command
 import traceback
+import threading
 
 # создаем экземпляр класса Recognizer
 recognizer = sr.Recognizer()
 
 load_dotenv()
 
-TOKEN = os.getenv("TOKEN")
+TOKEN_PORCUPINE = os.getenv("TOKEN_PORCUPINE")
 
 def show_exception_and_exit(exc_type, exc_value, tb):
     traceback.print_exception(exc_type, exc_value, tb)
@@ -30,7 +31,7 @@ def main():
         audio_stream = None
         print("Слушаю: ")
         imready()
-        porcupine = pvporcupine.create(access_key=TOKEN, keywords=['alexa'])
+        porcupine = pvporcupine.create(access_key=TOKEN_PORCUPINE, keywords=['alexa'])
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
             rate=porcupine.sample_rate,
@@ -55,31 +56,44 @@ def main():
         if pa is not None:
             pa.terminate()
 
+lastCommand = {}
+
+def execute_command(command_func, *args):
+    command_thread = threading.Thread(target=command_func, args=args)
+    command_thread.start()
+
 def listening ():
-    # while True:
-        with sr.Microphone() as source:
-            winsound.Beep(350, 200)
-            audio_data = recognizer.listen(source, phrase_time_limit=3)
-        try:
-            data = recognizer.recognize_google(audio_data, language="ru-RU")
-            
-            c, text = find_command(data, commands)
-
-            # print(c)
-            # print(text)
-
-            if c is None:
-                print("Такой команды нет: " + data)
-                return
-            
-            if len(text) > 0:
-                commands[c](text)
+    global lastCommand
+    with sr.Microphone() as source:
+        winsound.Beep(350, 200)
+        audio_data = recognizer.listen(source, phrase_time_limit=3)
+    try:
+        data = recognizer.recognize_google(audio_data, language="ru-RU")
+        
+        if (data in ["повтори команду", "ещё раз"]):
+            if len(lastCommand['text']) > 0:
+                execute_command(commands[lastCommand['c']], lastCommand['text'])
             else:
-                commands[c]()
-                
-        except sr.UnknownValueError:
-            pass
-        except sr.RequestError as e:
-            pass
+                execute_command(commands[lastCommand['c']])
+            return
+
+        c, text = find_command(data, commands)
+        # print(c, text)
+        
+        if c is None:
+            print("Такой команды нет: " + data)
+            return
+        
+        lastCommand = {'c': c, 'text': text}
+
+        if len(text) > 0:
+            execute_command(commands[c], text)
+        else:
+            execute_command(commands[c])
+            
+    except sr.UnknownValueError:
+        pass
+    except sr.RequestError as e:
+        pass
 
 main()
