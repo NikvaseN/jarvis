@@ -6,6 +6,7 @@ from modules.translate import translate
 from modules.weather import weather
 from modules.clicker import start_clicker, stop_clicker
 from modules.chatgpt import sendQuest
+from modules.changeVolume import *
 
 import os, sys
 from fuzzywuzzy import process
@@ -25,9 +26,7 @@ def show_all_commads ():
 		print(key)
 
 commands = {
-    "открой": empty,
-    "закрой": empty,
-    "запусти": empty,
+    "открой": empty, "закрой": empty, "запусти": empty,
 
     ('stop', 'стоп'): restartMe,
     
@@ -53,6 +52,15 @@ commands = {
     ("какая погода", "какая сейчас погода"): weather,
 
     ("узнай", "скажи"): sendQuest,
+
+    ("выключи звук в", "выключи звук"): mute_application,
+    ("включи звук в", "включи звук"): unmute_application,
+
+    ("выключи весь звук"): mute_all,
+    ("включи весь звук"): unmute_all,
+
+    ("покажи все звуковые процессы", "покажи звуковые процессы"): print_sound_processes,
+
     
     "закрой игру": closeGames,
     "закрой себя": closeSelf,

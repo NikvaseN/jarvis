@@ -1,6 +1,6 @@
 import sys, os
 import psutil
-from config import games, URL_SOUNDS, buttons
+from config import games_Processes, URL_SOUNDS, buttons
 import winsound
 import subprocess
 from fuzzywuzzy import process
@@ -54,6 +54,17 @@ def killProcess(names):
                     proc.kill()
             except (psutil.AccessDenied, psutil.NoSuchProcess):
                 pass
+    elif isinstance(names, dict):
+        for proc in psutil.process_iter():
+            try:
+                proc_name_lower = proc.name().lower()
+                for value in names.values():
+                    if value.lower() in proc_name_lower:
+                        proc.kill()
+            except (psutil.AccessDenied, psutil.NoSuchProcess):
+                pass
+    else:
+        sound('Неправильные_параметры.mp3')
 
 def startProcess(url) :
     starting()
@@ -65,7 +76,7 @@ def startAdminProcess(url) :
     
 def closeGames():
     closing()
-    killProcess(games)
+    killProcess(games_Processes)
 
 def get_closest_match(text, KEYWORDS):
     closest_match, _ = process.extractOne(text, KEYWORDS.keys())
@@ -75,6 +86,8 @@ def getUrl(user_input, URLS):
     if user_input is not None:
         user_input = ' '.join(user_input)
         name = user_input.lower()
+        # print(name)
+        # print(URLS)
         if name in URLS:
             return URLS[name]
         else:
@@ -82,7 +95,9 @@ def getUrl(user_input, URLS):
                 value = URLS[key]
                 if isinstance(key, tuple):
                     for alias in key:
+                        # print(alias, name)
                         if alias == name:
+                            # print(value)
                             return value
                 elif key == name:
                     return value
@@ -91,7 +106,7 @@ def getUrl(user_input, URLS):
         return None
         
 def restartMe ():
-    subprocess.Popen(['python', r'C:\Users\User0\Desktop\Jarvis\main2.py'])
+    subprocess.Popen(['python', r'C:\Users\User0\Desktop\Jarvis\main.py'])
     os._exit(0)
 
 def find_command(text, commands):
@@ -136,4 +151,4 @@ def press_button(button = None):
         sound('Что_то_пошло_не_так.mp3')
         
 def copy(data):
-	pyperclip.copy(data)
+    pyperclip.copy(data)

@@ -66,7 +66,7 @@ def listening ():
     global lastCommand
     with sr.Microphone() as source:
         winsound.Beep(350, 200)
-        audio_data = recognizer.listen(source, phrase_time_limit=3)
+        audio_data = recognizer.listen(source, phrase_time_limit=5)
     try:
         data = recognizer.recognize_google(audio_data, language="ru-RU")
         
