@@ -1,6 +1,7 @@
 # -----------------------------------Проект-------------------------------- #
 
 URL_SOUNDS = r'C:\Users\User0\Desktop\Jarvis\sounds\lily' # Изменить на свой путь к папке со звуками
+triggerWords = ['алекса', 'алиса', 'алекс'] # Ключевая фраза
 
 
 # -----------------------------------САЙТЫ-------------------------------- #
@@ -28,7 +29,9 @@ games_Processes = {
 	('genshin', 'геншине', 'геншин'): "GenshinImpact.exe",
 	('cs 2', 'cs2', 'кс 2', 'кс'): "cs2.exe",
 	('dota', 'доте'): "dota2.exe",
-	('brawlhalla'): "brawlhalla.exe",
+	('brawlhalla'): "BrawlhallaGame.exe",
+	('дрифт', 'дрифте', 'drift'): "TorqueDrift.exe",
+	('content warning'): "Content Warning.exe",
 }
 
 ips = {

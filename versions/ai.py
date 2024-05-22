@@ -9,7 +9,7 @@ while True:
     # записываем звук с микрофона
     with sr.Microphone() as source:
         print("Слушаю: ")
-        audio_data = recognizer.listen(source)
+        audio_data = recognizer.listen(source, phrase_time_limit=5)
 
     # распознаем речь с помощью Google Speech Recognition
     try:
