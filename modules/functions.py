@@ -1,6 +1,6 @@
 import sys, os
 import psutil
-from config import games_Processes, URL_SOUNDS, buttons
+from config import games_Processes, URL_SOUNDS, buttons, myUrl
 import winsound
 import subprocess
 from fuzzywuzzy import process
@@ -11,6 +11,7 @@ from tts import va_speak
 import pyautogui
 import time
 import pyperclip
+import re
 
 def sound(url=None):
     def play_sound():
@@ -106,7 +107,7 @@ def getUrl(user_input, URLS):
         return None
         
 def restartMe ():
-    subprocess.Popen(['python', r'C:\Users\User0\Desktop\Jarvis\main.py'])
+    subprocess.Popen(['python', myUrl])
     os._exit(0)
 
 def find_command(text, commands):
@@ -152,3 +153,9 @@ def press_button(button = None):
         
 def copy(data):
     pyperclip.copy(data)
+
+def remove_smileys(text):
+    smiley_pattern = r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F700-\U0001F77F\U0001F780-\U0001F7FF\U0001F800-\U0001F8FF\U0001F900-\U0001F9FF\U0001FA00-\U0001FA6F\U0001FA70-\U0001FAFF\U00002700-\U000027BF\U00002600-\U000026FF\U00002900-\U0000297F\U0001F900-\U0001F9FF\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F700-\U0001F773]+'
+    cleaned_text = re.sub(smiley_pattern, '', text)
+    
+    return cleaned_text

@@ -9,7 +9,7 @@ from modules.functions import sound
 
 load_dotenv()
 
-TOKEN_CHATBAI_AUTH = os.getenv("TOKEN_CHATBAI_AUTH")
+TOKEN_GPT_AUTH = os.getenv("TOKEN_GPT_AUTH")
 url = f"https://beta.theb.ai/api/conversation?org_id=427f29c6-7174-4adf-aa57-d94a5f95b3bf"
 
 def remove_smileys(text):
@@ -30,7 +30,7 @@ def sendQuest(text):
 
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Bearer {TOKEN_CHATBAI_AUTH}'
+        'Authorization': f'Bearer {TOKEN_GPT_AUTH}'
     }
 
     response = ""

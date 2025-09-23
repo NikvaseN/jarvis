@@ -1,7 +1,8 @@
 # -----------------------------------Проект-------------------------------- #
 
-URL_SOUNDS = r'C:\Users\User0\Desktop\Jarvis\sounds\lily' # Изменить на свой путь к папке со звуками
+URL_SOUNDS = r'C:\Users\admin-vasiliy\Desktop\Jarvis\sounds\lily' # Изменить на свой путь к папке со звуками
 triggerWords = ['алекса', 'алиса', 'алекс'] # Ключевая фраза
+myUrl = r'C:\Users\admin-vasiliy\Desktop\Jarvis\picovoice.py' # Изменить на свой путь к файлу запуска бота
 
 
 # -----------------------------------САЙТЫ-------------------------------- #
@@ -49,4 +50,8 @@ buttons = {
 
 # -----------------------------------РАЗНОЕ-------------------------------- #
 
-ignoreMute = ['python.exe', '@%SystemRoot%\System32\AudioSrv.Dll,-202']
+ignoreMute = ['python.exe', 
+			  '@%SystemRoot%\System32\AudioSrv.Dll,-202',
+			  'sndvol.exe',
+			  'audiodg.exe',
+]

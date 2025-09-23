@@ -5,47 +5,28 @@ from modules.functions import sound
 from tts import va_speak
 load_dotenv()
 
-def soupGetTemp(soup, name):
-    weather_div = soup.select(f"div.{name}")[0]
-    temperature_element = weather_div.find("span", class_="unit_temperature_c")
-    if(temperature_element):
-        sign = temperature_element.find("span", class_="sign")
-        try:
-            sign = sign.contents[-1].strip()
-        except:
-            sign = ''
-        temp = temperature_element.contents[-1].strip()
-        return f'{sign}{temp}'
-
-def getWind(soup):
-    info = soup.select('div.now-info')[0]
-    wind_text = info.find("div", class_="unit_wind_km_h").text.strip()
-    wind_digits = ''.join(filter(str.isdigit, wind_text))
-    return wind_digits
-
-def getHumidity(soup):
-    info = soup.select('div.now-info-item.humidity')[0]
-    humidity = info.find("div", class_="item-value").text.strip()
-    return humidity
-
-def print_percentage(n):
-    n = int(n)
-    if n % 10 == 1 and n % 100 != 11:
-        return "процент"
-    elif 2 <= n % 10 <= 4 and (n % 100 < 10 or n % 100 >= 20):
-        return "процента"
-    else:
-        return "процентов"
+# def print_percentage(n):
+#     n = int(n)
+#     if n % 10 == 1 and n % 100 != 11:
+#         return "процент"
+#     elif 2 <= n % 10 <= 4 and (n % 100 < 10 or n % 100 >= 20):
+#         return "процента"
+#     else:
+#         return "процентов"
 
 def weather():
     sound('Сейчас_узнаю.mp3')
     HOST = os.getenv("WEATHER_URL")
     soup = parse(HOST)
-    now_weather = soupGetTemp(soup, 'now-weather')
-    now_feel = soupGetTemp(soup, 'now-feel')
-    now_desc = soup.find("div", class_="now-desc").text.strip()
-    now_wind = getWind(soup)
-    now_humidity = getHumidity(soup)
-    text = f"Погода сейчас {now_weather}, По ощущениям {now_feel}, {now_desc}. Ветер {now_wind} км в час. Влажность {now_humidity} {print_percentage(now_humidity)}."
-    print(text)
+
+    # selected = soup.select(f"div.AppFact_wrap_withReport__HYdAy")[0]
+    now_status = soup.find("p", class_="AppFact_warning__8kUUn").text.strip()
+    now_temp_sign = soup.find("span", class_="AppFactTemperature_sign__1MeN4").text.strip()
+    now_temp_value = soup.find("span", class_="AppFactTemperature_value__2qhsG").text.strip()
+    now_temp_feels = soup.find("span", class_="AppFact_feels__IJoel AppFact_feels_withYesterday__yE440").text.strip('°')
+    today_select = soup.select(f"div.AppShortForecastDay_container__r4hyT")[0]
+    today_temp_max = today_select.find("span", class_="AppShortForecastDay_temperature__DV3oM").text.strip('°')
+    now_uf_index = soup.find("span", class_="UvIndexRange_range__number__KkOdl").text.strip()
+
+    text = f"На улице {now_status}, Сейчас температура {now_temp_sign + now_temp_value}°, {now_temp_feels}, Максимальная температура {today_temp_max}, УФ индекс {now_uf_index}."
     va_speak(text)
