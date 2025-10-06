@@ -9,7 +9,7 @@ from modules.soundplay import soundplay
 import threading
 from tts import va_speak
 import pyautogui
-import time
+from datetime import datetime
 import pyperclip
 import re
 
@@ -107,6 +107,7 @@ def getUrl(user_input, URLS):
         return None
         
 def restartMe ():
+    sound('Хорошо.mp3')
     subprocess.Popen(['python', myUrl])
     os._exit(0)
 
@@ -150,6 +151,10 @@ def press_button(button = None):
             sound('Неправильные_параметры.mp3')
     except:
         sound('Что_то_пошло_не_так.mp3')
+        
+def now_time():
+    current_time = datetime.now().strftime("%H:%M")
+    va_speak(current_time)
         
 def copy(data):
     pyperclip.copy(data)

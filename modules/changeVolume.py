@@ -20,17 +20,28 @@ def mute_all(name = None):
     sessions = AudioUtilities.GetAllSessions()
     sound('Выключаю.mp3')
     for session in sessions:
-        if session.Process: # Можно убрать, чтобы выключить звук всех процессов, в том числе системных
-            if session.Process.name() in ignoreMute:
+        if session.Process: 
+            if session.Process.name() in ignoreMute: # Можно убрать, чтобы выключить звук всех процессов, в том числе системных
                 continue
             session.SimpleAudioVolume.SetMute(1, None)
+
+
+# Убавить весь звук
+def set_volume_all(volume = 0.05, voice = False, name = None):
+    sessions = AudioUtilities.GetAllSessions()
+    voice and sound('Выключаю.mp3') # Чтобы была озвучка
+    for session in sessions:
+        if session.Process: 
+            if session.Process.name() in ignoreMute:
+                continue
+            session.SimpleAudioVolume.SetMasterVolume(volume, None)
 
 # Включить весь звук
 def unmute_all(name = None):
     sound('Включаю.mp3')
     sessions = AudioUtilities.GetAllSessions()
     for session in sessions:
-        if session.Process: # Можно убрать, чтобы включить звук всех процессов, в том числе системных
+        if session.Process: 
             if session.Process.name() in ignoreMute:
                 continue
             session.SimpleAudioVolume.SetMute(0, None)

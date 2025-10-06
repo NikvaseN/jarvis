@@ -8,8 +8,10 @@ from dotenv import load_dotenv
 import sys, os
 from tts import va_speak
 from modules.functions import imready, find_command, sound
+from modules.changeVolume import set_volume_all
 import traceback
 import threading
+from modules.checkUseFunc import checkUsageFunction
 
 # создаем экземпляр класса Recognizer
 recognizer = sr.Recognizer()
@@ -31,6 +33,11 @@ def main():
         audio_stream = None
         print("Слушаю: ")
         imready()
+        
+        # Консольное управление в отдельном потоке
+        console_thread = threading.Thread(target=console_input_handler, daemon=True)
+        console_thread.start()
+        
         porcupine = pvporcupine.create(access_key=TOKEN_PORCUPINE, keywords=['alexa'])
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
@@ -59,19 +66,28 @@ def main():
 lastCommand = {}
 
 def execute_command(command_func, *args):
-    command_thread = threading.Thread(target=command_func, args=args)
+    def wrapper():
+        voice_req = checkUsageFunction(command_func, 'va_speak')
+        if voice_req: # Если результат функции должен быть озвучен, то прибавлять звук после озвучки
+            command_func(*args)
+            set_volume_all(1)
+        else:
+            set_volume_all(1)
+            command_func(*args)
+    command_thread = threading.Thread(target=wrapper)
     command_thread.start()
 
 def listening ():
     global lastCommand
     with sr.Microphone() as source:
+        set_volume_all()
         winsound.Beep(350, 200)
         # sound('Слушаю.mp3')
         audio_data = recognizer.listen(source, phrase_time_limit=5)
     try:
         data = recognizer.recognize_google(audio_data, language="ru-RU")
         
-        if (data in ["повтори команду", "ещё раз"]):
+        if (data in ["повтори команду", "ещё раз", 'выполни прошлую команду']):
             if len(lastCommand['text']) > 0:
                 execute_command(commands[lastCommand['c']], lastCommand['text'])
             else:
@@ -84,6 +100,7 @@ def listening ():
         if c is None:
             sound('Неверная_команда.mp3')
             print("Такой команды нет: " + data)
+            set_volume_all(1)
             return
         
         lastCommand = {'c': c, 'text': text}
@@ -98,4 +115,43 @@ def listening ():
     except sr.RequestError as e:
         pass
 
-main()
+def console_input_handler():
+    # Обработчик консольного ввода
+    
+    global lastCommand
+    
+    while True:
+        try:
+            user_input = input("\nВведите команду: ").strip()
+            
+            if user_input.lower() in ['повтори команду', 'ещё раз']:
+                if lastCommand:
+                    if len(lastCommand['text']) > 0:
+                        execute_command(commands[lastCommand['c']], lastCommand['text'])
+                    else:
+                        execute_command(commands[lastCommand['c']])
+                else:
+                    print("Нет предыдущей команды для повторения")
+                continue
+            
+            c, text = find_command(user_input, commands)
+            
+            if c is None:
+                print(f"Такой команды нет: {user_input}")
+                continue
+            
+            lastCommand = {'c': c, 'text': text}
+            
+            if len(text) > 0:
+                execute_command(commands[c], text)
+            else:
+                execute_command(commands[c])
+                
+        except KeyboardInterrupt:
+            print("\nЗавершение работы...")
+            os._exit(0)
+        except Exception as e:
+            print(f"Ошибка при обработке команды: {e}")
+
+if __name__ == "__main__":
+    main()
