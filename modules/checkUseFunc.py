@@ -2,7 +2,7 @@ import ast
 import inspect
 from typing import Callable
 
-# Проверка на то, используется ли функция func_name в функции func
+# Проверка на то, используется ли функция "func_name" в функции "func"
 def checkUsageFunction(func: Callable, func_name: str):
     try:
         source = inspect.getsource(func)

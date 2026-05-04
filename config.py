@@ -1,9 +1,50 @@
-# -----------------------------------Проект-------------------------------- #
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-URL_SOUNDS = r'C:\Users\admin-vasiliy\Desktop\Jarvis\sounds\lily' # Изменить на свой путь к папке со звуками
-triggerWords = ['алекса', 'алиса', 'алекс'] # Ключевая фраза
-myUrl = r'C:\Users\admin-vasiliy\Desktop\Jarvis\picovoice.py' # Изменить на свой путь к файлу запуска бота
+BASE_DIR = Path(__file__).parent.absolute()
 
+env_path = BASE_DIR / '.env'
+load_dotenv(dotenv_path=env_path)
+
+def _get_required_env(key: str) -> str:
+    """Получает переменную окружения или падает с понятной ошибкой."""
+    value = os.getenv(key)
+    if value is None:
+        raise ValueError(
+            f"Не найдена обязательная переменная окружения: {key}\n"
+            f"Проверь файл .env в корне проекта: {env_path}"
+        )
+    return value
+
+def _get_optional_env(key: str, default: str = "") -> str:
+    """Получает переменную окружения или возвращает значение по умолчанию."""
+    return os.getenv(key, default)
+
+# -------------------ОСНОВНЫЕ НАСТРОЙКИ ПРОЕКТА-------------------------- #
+
+# Пути
+URL_SOUNDS = str(BASE_DIR / 'sounds' / 'lily') # Путь к папке с голосовыми ответами (файлы должны наываться идентично)
+MAIN_SCRIPT = str(BASE_DIR / 'main.py')
+
+WEATHER_CITY = _get_optional_env('WEATHER_CITY', '')
+
+# ------------------------------API КЛЮЧИ-------------------------------- #
+
+# AI Chat
+API_KEY_GPT = _get_optional_env('API_KEY_GPT', '')
+
+# Picovoice
+PICOVOICE_KEY = _get_optional_env('PICOVOICE_KEY', '')
+
+# Telegram бот
+TELEGRAM_BOT_TOKEN = _get_optional_env('TELEGRAM_BOT_TOKEN', '')
+
+# ------------------------------ВНЕШНИЕ URL------------------------------ #
+
+WEATHER_URL = _get_optional_env('WEATHER_URL', '')
+
+# ----------------------СПИСКИ (ИГРЫ, САЙТЫ, ПРИЛОЖЕНИЯ)------------------ #
 
 # -----------------------------------САЙТЫ-------------------------------- #
 
@@ -24,7 +65,7 @@ games_URLS = {
 	'city car driving': r'E:\Games\City Car Driving\SmartSteamLoader.exe',
 }
 
-adminGames = ['genshin']
+adminGames = ['genshin'] # Игры которые нужно запускать от имени администратора
 
 games_Processes = {
 	('genshin', 'геншине', 'геншин'): "GenshinImpact.exe",
@@ -51,7 +92,25 @@ buttons = {
 # -----------------------------------РАЗНОЕ-------------------------------- #
 
 ignoreMute = ['python.exe', 
-			  '@%SystemRoot%\System32\AudioSrv.Dll,-202',
+			  r'@%SystemRoot%\System32\AudioSrv.Dll,-202',
 			  'sndvol.exe',
 			  'audiodg.exe',
 ]
+
+def validate_config():
+    """Проверяет, что все необходимые настройки заданы."""
+    warnings = []
+    
+    if not WEATHER_URL:
+        warnings.append("WEATHER_URL не задан — команда погоды не будет работать")
+    if not API_KEY_GPT:
+        warnings.append("Не задан ни один API ключ для нейросетей - не получится задать вопрос ИИ")
+    
+    if warnings:
+        print("⚠️  Предупреждения конфигурации:")
+        for w in warnings:
+            print(f"   - {w}")
+        print()
+
+# Автоматическая проверка при импорте
+validate_config()

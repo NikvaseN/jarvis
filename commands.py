@@ -5,7 +5,7 @@ from modules.functions import *
 from modules.translate import translate
 from modules.weather import weather
 from modules.clicker import start_clicker, stop_clicker
-from modules.deepseek import sendQuest
+from modules.ai_chat import sendQuest
 from modules.changeVolume import *
 
 import os, sys

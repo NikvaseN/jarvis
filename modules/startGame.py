@@ -2,6 +2,7 @@ import subprocess
 import os
 from modules.functions import startProcess, getUrl, error, startAdminProcess
 from config import games_URLS as URLS, adminGames
+from tts import va_speak
 
 def getGameFromURL(url, urls):
     for game, game_url in urls.items():
@@ -19,6 +20,6 @@ def startGame(name = None):
             else:
                 startProcess(url)
         else:
-            error()
+            va_speak('Название игры в спике игр не найдена или что-то пошло не так! Проверьте список игр в конфиге')
     except:
         error()

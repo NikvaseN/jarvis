@@ -1,6 +1,7 @@
 import sys, os
+import time
 import psutil
-from config import games_Processes, URL_SOUNDS, buttons, myUrl
+from config import games_Processes, URL_SOUNDS, buttons, MAIN_SCRIPT
 import winsound
 import subprocess
 from fuzzywuzzy import process
@@ -13,16 +14,17 @@ from datetime import datetime
 import pyperclip
 import re
 
-def sound(url=None):
+def sound(url=None, wait=False):
     def play_sound():
-        if url is None:
-            winsound.Beep(300, 200)
-            winsound.Beep(500, 200)
-        else:
-            soundplay(os.path.join(URL_SOUNDS, url))
-
-    sound_thread = threading.Thread(target=play_sound)
-    sound_thread.start()
+        soundplay(os.path.join(URL_SOUNDS, url))
+    if wait:
+        # Запускаем в основном потоке — ждём
+        play_sound()
+    else:
+        # Запускаем в отдельном потоке — не ждём
+        sound_thread = threading.Thread(target=play_sound)
+        sound_thread.start()
+	
 
 def closing():
     sound('Закрываю.mp3')
@@ -67,9 +69,18 @@ def killProcess(names):
     else:
         sound('Неправильные_параметры.mp3')
 
-def startProcess(url) :
-    starting()
-    subprocess.Popen([url, ])
+# def startProcess(url) :
+#     starting()
+#     subprocess.Popen([url, ])
+
+def startProcess(url):
+    try:
+        subprocess.Popen([url])
+    except Exception as e:
+        print(f"Ошибка: {e}")
+        error()
+    else:
+        starting()
     
 def startAdminProcess(url) :
     starting()
@@ -108,7 +119,8 @@ def getUrl(user_input, URLS):
         
 def restartMe ():
     sound('Хорошо.mp3')
-    subprocess.Popen(['python', myUrl])
+    time.sleep(1)
+    subprocess.Popen(['python', MAIN_SCRIPT])
     os._exit(0)
 
 def find_command(text, commands):
