@@ -21,3 +21,6 @@ SpeechRecognition>=3.10.0
 pyautogui>=0.9.54
 psutil>=5.9.0
 pygame>=2.5.0
+timezonefinder
+geopy
+pytz

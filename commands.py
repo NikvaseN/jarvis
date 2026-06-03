@@ -7,6 +7,8 @@ from modules.weather import weather
 from modules.clicker import start_clicker, stop_clicker
 from modules.ai_chat import sendQuest
 from modules.changeVolume import *
+from modules.startMusic import startMusic
+from modules.time import get_time_by_city
 
 import os, sys
 from fuzzywuzzy import process
@@ -36,7 +38,7 @@ commands = {
     "запусти диплом": startDegree,
     "запусти игру": startGame,
     
-    "обновись": restartMe,
+    ("обновись", 'обнови'): restartMe,
 
     ("переведи", "переведи слово"): translate,
 
@@ -51,7 +53,12 @@ commands = {
     
     ("какая погода", "какая сейчас погода"): weather,
 
+    ("какое время", "сколько времени", "время", "сколько часов"): get_time_by_city,
+
     ("узнай", "скажи"): sendQuest,
+
+    ("я дома", "дома"): startMusic,
+    ("включи музыку"): startMusic,
 
 	("время", "сколько времени", "сколько время", 'сколько сейчас времени', 'сколько сейчас время'): now_time,
 

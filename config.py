@@ -27,7 +27,7 @@ def _get_optional_env(key: str, default: str = "") -> str:
 URL_SOUNDS = str(BASE_DIR / 'sounds' / 'lily') # Путь к папке с голосовыми ответами (файлы должны наываться идентично)
 MAIN_SCRIPT = str(BASE_DIR / 'main.py')
 
-WEATHER_CITY = _get_optional_env('WEATHER_CITY', '')
+CITY = _get_optional_env('CITY', '')
 
 # ------------------------------API КЛЮЧИ-------------------------------- #
 
@@ -87,6 +87,7 @@ buttons = {
 	('right', 'стрелку вправо') : 'right',
 	('left', 'стрелку влево') : 'left',
 	('f', 'full экран', 'полный экран') : 'f',
+	('далее', 'вперед') : 'shift+n',
 }
 
 # -----------------------------------РАЗНОЕ-------------------------------- #

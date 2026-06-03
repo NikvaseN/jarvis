@@ -1,7 +1,7 @@
 import requests
 import re
 from datetime import datetime, timedelta
-from config import WEATHER_CITY
+from config import CITY
 from modules.functions import sound
 from modules.geocoding import get_coordinates
 from tts import va_speak
@@ -20,7 +20,7 @@ MONTHS = {
 
 
 def weather(command_text=""):
-    lat, lon = get_coordinates(WEATHER_CITY)
+    lat, lon = get_coordinates(CITY)
     
     if lat is None:
         va_speak("Город не настроен. Укажите город в файле конфигурации")
