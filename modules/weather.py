@@ -1,10 +1,12 @@
 import requests
 import re
 from datetime import datetime, timedelta
-from config import CITY
+from core.config import settings
 from modules.functions import sound
 from modules.geocoding import get_coordinates
 from tts import va_speak
+
+CITY = settings.CITY
 
 DAYS_OF_WEEK = {
     'понедельник': 0, 'вторник': 1, 'среда': 2, 'среду': 2,

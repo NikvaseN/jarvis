@@ -1,14 +1,18 @@
 import sys, os
 import time
 import psutil
-from config import games_Processes, URL_SOUNDS, buttons, MAIN_SCRIPT
+from core.config import settings
 import winsound
+
+games_Processes = settings.games_Processes
+URL_SOUNDS = settings.URL_SOUNDS
+buttons = settings.buttons
+MAIN_SCRIPT = settings.MAIN_SCRIPT
 import subprocess
 from fuzzywuzzy import process
 import ctypes
 from modules.soundplay import soundplay
 import threading
-from tts import va_speak
 import pyautogui
 from datetime import datetime
 import pyperclip
@@ -163,11 +167,7 @@ def press_button(button = None):
             sound('Неправильные_параметры.mp3')
     except:
         sound('Что_то_пошло_не_так.mp3')
-        
-def now_time():
-    current_time = datetime.now().strftime("%H:%M")
-    va_speak(current_time)
-        
+
 def copy(data):
     pyperclip.copy(data)
 

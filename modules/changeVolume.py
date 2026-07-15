@@ -1,6 +1,9 @@
 from pycaw.pycaw import AudioUtilities
-from config import games_Processes, ignoreMute
+from core.config import settings
 from modules.functions import getUrl, sound
+
+games_Processes = settings.games_Processes
+ignoreMute = settings.ignoreMute
 
 # Вывести все звуковые процессы
 def print_sound_processes():

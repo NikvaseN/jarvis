@@ -1,4 +1,5 @@
 from datetime import datetime
+<<<<<<< Updated upstream
 import pytz
 from geopy.geocoders import Nominatim
 from timezonefinder import TimezoneFinder
@@ -44,3 +45,25 @@ def get_time_by_city():
         display_hours = hours if hours == 0 else hours - 12 if hours > 12 else hours
     
     va_speak(f"Сейчас {display_hours} часов {minutes} минут {time_of_day}")
+=======
+from tts import va_speak
+
+def tell_time():
+    h, m = datetime.now().hour, datetime.now().minute
+    
+    # Время суток
+    if 5 <= h < 12:   tod = "утра"
+    elif 12 <= h < 17: tod = "дня"
+    elif 17 <= h < 23: tod = "вечера"
+    else:              tod = "ночи"
+    
+    # 12-часовой формат
+    dh = h % 12 or 12
+    
+    if m == 0:
+        text = f"Сейчас {dh} часов {tod}"
+    else:
+        text = f"Сейчас {dh} часов {m} минут {tod}"
+    
+    va_speak(text)
+>>>>>>> Stashed changes

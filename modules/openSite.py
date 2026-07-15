@@ -1,8 +1,10 @@
 import webbrowser
 import winsound
 from fuzzywuzzy import process
-from config import sites_URLS as URLS
+from core.config import settings
 from modules.functions import opening, getUrl, error, sound
+
+URLS = settings.sites_URLS
 
 def openSite (que = None, say = True):
     try:

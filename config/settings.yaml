@@ -1,0 +1,140 @@
+# ═══════════════════════════════════════════
+#  Jarvis — настройки (YAML)
+#  Секреты (API-ключи, CITY) — в .env
+#
+#  Каждая запись может содержать список aliases
+#  для голосового/текстового сопоставления.
+# ═══════════════════════════════════════════
+
+paths:
+  sounds_voice: "sounds/lily"     # голосовые ответы
+  sounds_music: "sounds/josh"     # звуки/музыка
+
+# ──────────────────────────────────
+#  Сайты
+# ──────────────────────────────────
+sites:
+  urls:
+    youtube:
+      url: "https://www.youtube.com/"
+      aliases: ["ютуба", "ютуб"]
+    translate:
+      url: "https://translate.yandex.ru/translator/Русский-Английский"
+      aliases: ["переводчика", "переводчик"]
+    vk:
+      url: "https://vk.com/"
+      aliases: ["вк", "вконтакте"]
+    genshin_interactive_map:
+      url: "https://act.hoyolab.com/ys/app/interactive-map/index.html?lang=ru-ru#/map/2?shown_types=554&center=792.90,-3488.59&zoom=0.50"
+      aliases: ["интерактивной карты"]
+    speech_synthesis:
+      url: "https://elevenlabs.io/app/speech-synthesis"
+      aliases: ["синтеза речи"]
+
+# ──────────────────────────────────
+#  Игры
+# ──────────────────────────────────
+games:
+  urls:
+    cs2:
+      path: "E:\\Steam\\steamapps\\common\\Counter-Strike Global Offensive\\game\\bin\\win64\\cs2.exe"
+      aliases: ["кс 2", "кс2"]
+    ghostrunner:
+      path: "E:\\Games\\Ghostrunner\\Ghostrunner.exe"
+      aliases: ["ghost runner"]
+    genshin:
+      path: "E:\\GenshinImpact\\Genshin Impact game\\GenshinImpact.exe"
+    city_car_driving:
+      path: "E:\\Games\\City Car Driving\\SmartSteamLoader.exe"
+
+  processes:
+    genshin:
+      process: "GenshinImpact.exe"
+      aliases: ["геншине", "геншин"]
+    cs2:
+      process: "cs2.exe"
+      aliases: ["кс 2", "кс"]
+    dota:
+      process: "dota2.exe"
+      aliases: ["доте"]
+    brawlhalla:
+      process: "BrawlhallaGame.exe"
+    drift:
+      process: "TorqueDrift.exe"
+      aliases: ["дрифт", "дрифте"]
+    content_warning:
+      process: "Content Warning.exe"
+
+  admin:
+    - genshin
+
+# ──────────────────────────────────
+#  Клавиши
+# ──────────────────────────────────
+buttons:
+  keys:
+    space:
+      key: "space"
+      aliases: ["пробел", "паузу", "прыжок"]
+    right:
+      key: "right"
+      aliases: ["стрелку вправо"]
+    left:
+      key: "left"
+      aliases: ["стрелку влево"]
+    fullscreen:
+      key: "f"
+      aliases: ["full экран", "полный экран"]
+    next:
+      key: "shift+n"
+      aliases: ["далее", "вперед"]
+
+# ──────────────────────────────────
+#  IP-адреса
+# ──────────────────────────────────
+ips:
+  hosts:
+    nipos:
+      host: "connect 46.174.50.40:27015"
+      aliases: ["nibas", "никаса"]
+
+# ──────────────────────────────────
+#  Аудио
+# ──────────────────────────────────
+audio:
+  ignore_mute:
+    - python.exe
+    - python3.exe
+    - '@%SystemRoot%\System32\AudioSrv.Dll,-202'
+    - sndvol.exe
+    - audiodg.exe
+  volume_reduction: 0.05
+  sample_rate: 16000
+  trigger_words:
+    - алекса
+    - jarvis
+    - джарвис
+
+# ──────────────────────────────────
+#  Wake Word
+# ──────────────────────────────────
+wake_word:
+  model: "ALEXA"
+  chunk_size: 160
+
+# ──────────────────────────────────
+#  LLM
+# ──────────────────────────────────
+llm:
+  model: "llama-3.3-70b-versatile"
+  temperature: 0.7
+
+# ──────────────────────────────────
+#  STT (распознавание речи)
+# ──────────────────────────────────
+stt:
+  engine: "faster_whisper"
+  model: "small"
+  language: "ru"
+  device: "cpu"
+  compute_type: "int8"

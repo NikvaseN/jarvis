@@ -1,8 +1,11 @@
 import subprocess
 import os
 from modules.functions import startProcess, getUrl, error, startAdminProcess
-from config import games_URLS as URLS, adminGames
+from core.config import settings
 from tts import va_speak
+
+URLS = settings.games_URLS
+adminGames = settings.adminGames
 
 def getGameFromURL(url, urls):
     for game, game_url in urls.items():

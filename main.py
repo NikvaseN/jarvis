@@ -8,7 +8,6 @@ from modules.functions import imready, find_command, sound
 from modules.changeVolume import set_volume_all
 import traceback
 import threading
-from modules.checkUseFunc import checkUsageFunction
 from pymicro_wakeword import MicroWakeWord, MicroWakeWordFeatures, Model
 import numpy as np
 
@@ -70,13 +69,10 @@ lastCommand = {}
 
 def execute_command(command_func, *args):
     def wrapper():
-        voice_req = checkUsageFunction(command_func, 'va_speak')
-        if voice_req:
+        try:
             command_func(*args)
+        finally:
             set_volume_all(1)
-        else:
-            set_volume_all(1)
-            command_func(*args)
     command_thread = threading.Thread(target=wrapper)
     command_thread.start()
 

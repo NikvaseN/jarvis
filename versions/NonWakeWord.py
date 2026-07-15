@@ -6,12 +6,14 @@ from tts import va_speak
 from modules.functions import find_command, sound
 import traceback
 import threading
-import config
+from core.config import settings
 
 # создаем экземпляр класса Recognizer
 recognizer = sr.Recognizer()
 
 load_dotenv()
+
+triggerWords = settings.triggerWords
 
 def show_exception_and_exit(exc_type, exc_value, tb):
     traceback.print_exception(exc_type, exc_value, tb)
@@ -34,10 +36,10 @@ while True:
         print("Вы сказали: " + data)
 
         data = data.lower()
-        if any(keyword in data for keyword in config.triggerWords):
+        if any(keyword in data for keyword in triggerWords):
             # Ищем какое триггерное слово было сказано
             found_index = None
-            for keyword in config.triggerWords:
+            for keyword in triggerWords:
                 if keyword in data:
                     found_index = data.index(keyword)
                     break
